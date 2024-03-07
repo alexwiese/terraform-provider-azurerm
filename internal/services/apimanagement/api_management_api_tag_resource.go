@@ -110,7 +110,11 @@ func resourceApiManagementApiTagRead(d *pluginsdk.ResourceData, meta interface{}
 
 	apiName := getApiName(id.ApiId)
 
-	apiId := api.NewApiID(subscriptionId, id.ResourceGroupName, id.ServiceName, apiName)
+	apiId, err := api.ParseApiID(d.Get("api_id").(string))
+	if err != nil {
+		return err
+	}
+	
 	tagId := apitag.NewApiTagID(subscriptionId, id.ResourceGroupName, id.ServiceName, apiName, id.TagId)
 
 	resp, err := client.TagGetByApi(ctx, tagId)
